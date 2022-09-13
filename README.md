@@ -71,6 +71,7 @@ Note that eth0 is the default k8s network, and net1 has been created as part of 
 
 you can determine the secondary interface's ip address with a `kubectl get netshoot -o yaml`. reaping the ip's we have the two netshoot pods with ips 10.1.0.57 and 10.1.0.238
 
+hmm... doesn't work... see issues
 
 ## Details
 
@@ -79,6 +80,18 @@ We install calico with the detail network of 192.168.0.0/16. Ie all pods will be
 We then install multus and hard code that the 'master' CNI should be calico using a kustomize patch definition to overload the multus daemonset with `-multus-master-cni-file=10-calico.conflist`. Notice that multus will by default set up a `00-multus.conf` on each k8s worker nodes CNI config path under `/etc/cni/net.d/` - this will ensure that it is always used as the k8s CNI and then delegates the network stuff over to calico.
 
 We then spin up cilium, ensuring that we do not disturb the existing pods and network with `--restart-unmanaged-pods=false`, and we ensure that the IP range for cilium does not overlap with that of any other network (especially that of calico). If it did, we should have a difficult time routing traffic from the pods into the appropriate CNI. We also force that cilium does not have exclusive use of the hosts using `.cni.exclusive=false`.
+
+
+## Issues
+
+1. when installing the cilium CNI, the coredns pods go crazy and keep on restarting due to a SIGTERM. why?!?
+2. i can't actually ping between pods on their cilium interfaces. there doesn't appear to be a route in ip route on the pod. what is the gateway address for cilium?
+
+
+## Future Work
+
+how to migrate from one cni to another for the default network? 
+
 
 
 ## Misc
