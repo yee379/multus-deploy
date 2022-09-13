@@ -1,0 +1,74 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: multus-cni-config
+  namespace: kube-system
+  labels:
+    tier: node
+    app: multus
+data:
+  # NOTE: If you'd prefer to manually apply a configuration file, you may create one here.
+  # In the case you'd like to customize the Multus installation, you should change the arguments to the Multus pod
+  # change the "args" line below from
+  # - "--multus-conf-file=auto"
+  # to:
+  # "--multus-conf-file=/tmp/multus-conf/70-multus.conf"
+  # Additionally -- you should ensure that the name "70-multus.conf" is the alphabetically first name in the
+  # /etc/cni/net.d/ directory on each node, otherwise, it will not be used by the Kubelet.
+  cni-conf.json: |
+    {
+      "capabilities": {
+        "bandwidth": true,
+        "portMappings": true
+      },
+      "cniVersion": "0.3.1",
+      "delegates": [
+        {
+          "cniVersion": "0.3.1",
+          "name": "k8s-pod-network",
+          "plugins": [
+            {
+              "container_settings": {
+                "allow_ip_forwarding": false
+              },
+              "datastore_type": "kubernetes",
+              "ipam": {
+                "assign_ipv4": "true",
+                "assign_ipv6": "false",
+                "type": "calico-ipam"
+              },
+              "kubernetes": {
+                "k8s_api_root": "https://10.96.0.1:443",
+                "kubeconfig": "/etc/cni/net.d/calico-kubeconfig"
+              },
+              "log_file_path": "/var/log/calico/cni/cni.log",
+              "log_level": "Info",
+              "mtu": 0,
+              "nodename_file_optional": false,
+              "policy": {
+                "type": "k8s"
+              },
+              "type": "calico"
+            },
+            {
+              "capabilities": {
+                "bandwidth": true
+              },
+              "type": "bandwidth"
+            },
+            {
+              "capabilities": {
+                "portMappings": true
+              },
+              "snat": true,
+              "type": "portmap"
+            }
+          ]
+        }
+      ],
+      "logLevel": "verbose",
+      "logToStderr": true,
+      "kubeconfig": "/etc/cni/net.d/multus.d/multus.kubeconfig",
+      "name": "multus-cni-network",
+      "type": "multus"
+    }

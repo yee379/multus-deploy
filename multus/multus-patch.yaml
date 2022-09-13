@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-multus-ds
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      # nodeSelector:
+      #   "kubernetes.io/hostname": sdfk8sext001
+      # initContainers:
+      # - name: config
+      #   image: ghcr.io/k8snetworkplumbingwg/multus-cni:v3.9.1-thick-amd64
+      #   command: [ "cp", "/tmp/cni/net.d/00-multus.conf", "/host/etc/cni/net.d/00-multus.conf"]
+      #   volumeMounts:
+      #   - mountPath: /tmp/cni/net.d/00-multus.conf
+      #     name: multus-cfg
+      #     subPath: 00-multus.conf
+      #   - mountPath: /host/etc/cni/net.d
+      #     name: cni
+      containers:
+      - name: kube-multus
+        #  command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 6 ; done"]
+        command: [ "/usr/src/multus-cni/bin/multus-daemon" ]
+        args:
+        - -cni-version=0.3.1
+        - -cni-config-dir=/host/etc/cni/net.d
+        - -multus-conf-file=auto
+        - -multus-autoconfig-dir=/host/etc/cni/net.d
+          #- -multus-master-cni-file=05-cilium.conf
+        - -multus-master-cni-file=10-calico.conflist
+        - -multus-log-to-stderr=true
+        - -multus-log-level=verbose
+        # volumeMounts:
+        # - mountPath: /tmp/etc/cni/net.d/00-multus.conf
+        #   name: multus-cfg
+        #   subPath: 00-multus.conf
+      # volumes:
+      # - name: multus-cfg
+      #   configMap:
+      #     name: multus-cni-config
+      #     items:
+      #     - key: cni-conf.json
+      #       path: 00-multus.conf

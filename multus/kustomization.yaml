@@ -1,0 +1,11 @@
+
+
+resources:
+- multus-daemonset-thick.yml
+
+patchesStrategicMerge:
+- multus-patch.yaml
+
+images:
+- name: ghcr.io/k8snetworkplumbingwg/multus-cni
+  newTag: v3.9.1-thick-amd64
