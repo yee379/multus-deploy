@@ -9,6 +9,11 @@ spec:
       "name": "cilium",
       "type": "cilium-cni",
       "enable-debug": true,
-      "routes": [ { "dst": "0.0.0.0/0" } ],
+      "ipam": {
+        "type": "host-local",
+        "subnet": "10.0.0.0/16",
+        "routes": [ { "dst": "0.0.0.0/0" } ],
+        "gateway": "10.0.0.1"
+      },
       "log-file":"/var/run/cilium/cilium-cni.log"
     }

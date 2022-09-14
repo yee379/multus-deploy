@@ -69,9 +69,31 @@ keti netshoot -- ip a
 
 Note that eth0 is the default k8s network, and net1 has been created as part of the `annotation` in the pod definition to add cilium.
 
-you can determine the secondary interface's ip address with a `kubectl get netshoot -o yaml`. reaping the ip's we have the two netshoot pods with ips 10.1.0.57 and 10.1.0.238
+you can determine the secondary interface's ip address with a `kubectl get netshoot -o yaml`. reaping the ip's we have the two netshoot pods with ips 10.0.2.19 and 10.0.2.88 respectively.
 
-hmm... doesn't work... see issues
+however, the default routing tables from the pods look something like this:
+
+```
+❯ keti netshoot -- ip route
+default via 169.254.1.1 dev eth0
+10.0.2.246 dev net1 scope link
+169.254.1.1 dev eth0 scope link
+```
+
+which means that the pods do not know how to route the traffic over the cilium network. In order for it to function, we need to add a new route using:
+
+```
+❯ keti netshoot -- ip route add 10.0.0.0/16 via 10.0.2.246 dev net1
+```
+
+this has to be added to all pods.
+
+once that is done, you should be able to ping between pods.
+
+unfortuantely, each k8s worker node will have its down unique gateway address that will have to be added.
+
+
+
 
 ## Details
 
