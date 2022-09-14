@@ -92,7 +92,11 @@ once that is done, you should be able to ping between pods.
 
 unfortuantely, each k8s worker node will have its down unique gateway address that will have to be added.
 
+one could simplying this by just running:
 
+```
+❯ kubectl exec -ti netshoot -- bash -c "/sbin/ip route | grep net1 | awk '{print \$1}' | xargs -I%  /sbin/ip route add 10.16.0.0/12 via % dev net1"
+```
 
 
 ## Details
@@ -106,7 +110,7 @@ We then spin up cilium, ensuring that we do not disturb the existing pods and ne
 
 ## Issues
 
-1. when installing the cilium CNI, the coredns pods go crazy and keep on restarting due to a SIGTERM. why?!?
+1. when installing the cilium CNI, the coredns pods go crazy and keep on restarting due to a SIGTERM. why?!? this could be the default 10.0.0.0/8 ip range of cilium? or perhaps a conflict in the vxlan with calico?
 2. i can't actually ping between pods on their cilium interfaces. there doesn't appear to be a route in ip route on the pod. what is the gateway address for cilium?
 
 
