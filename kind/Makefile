@@ -6,4 +6,5 @@ apply:
 kubeconfig:
 	kind get kubeconfig --name=cni-test > ~/.kube/config
 
-
+delete:
+	kind delete clusters cni-test

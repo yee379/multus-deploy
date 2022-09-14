@@ -14,3 +14,9 @@ dump:
 
 apply: run-apply
 
+
+cilium:
+	kubectl apply -f cilium-networkattachment.yaml
+
+weave:
+	kubectl apply -f weave-networkattachment.yaml
