@@ -11,7 +11,7 @@ spec:
       "enable-debug": true,
       "ipam": {
         "type": "host-local",
-        "subnet": "10.0.0.0/16",
+        "subnet": "10.16.0.0/12",
         "routes": [ { "dst": "0.0.0.0/0" } ],
         "gateway": "10.0.0.1"
       },

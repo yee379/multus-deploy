@@ -3,7 +3,7 @@ cni:
   # readCniConf: /host/etc/cni/net.d/05-cilium.conf
 ipam:
   mode: cluster-pool
-  #  operator:
-  #    clusterPoolIPv4MaskSize: '24'
-  #    clusterPoolIPv4PodCIDRList:
-  #    - 10.1.0.0/16
+  operator:
+    clusterPoolIPv4MaskSize: '24'
+    clusterPoolIPv4PodCIDRList:
+    - 10.16.0.0/12
