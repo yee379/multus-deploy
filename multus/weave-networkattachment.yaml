@@ -1,0 +1,26 @@
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: weave
+spec:
+  config: |-
+    {
+      "cniVersion": "0.3.0",
+      "name": "weave",
+      "type": "weave-net",
+      "ipam": {
+        "type": "host-local",
+        "subnet": "10.32.0.0/12",
+        "routes": [
+          {
+            "dst": "0.0.0.0/0"
+          }
+        ],
+        "gateway": "10.32.0.1"
+      }
+    }
+
+    
+#      "kubernetes": {
+#        "kubeconfig": "/etc/cni/multus/weave/net.d/cni/net.d/weave-kubeconfig"
+#      }
